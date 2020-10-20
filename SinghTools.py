@@ -1,42 +1,24 @@
 import numpy as np
-from tqdm import tqdm
 
-def Singh(CStruct, TargetDist, TrueParam, SSamples = 1000, TQDM=False):
-    assert SSamples >= 2 and isinstance(SSamples, int), 'SSamples must be an integer greater than 2.'
-    Samples = TargetDist(SSamples)
-    if isinstance(CStruct(TrueParam, Samples[0]), np.ndarray):
-        assert len(CStruct(TrueParam, Samples[0])) == 2, 'Confidence Structure must have defined lower and upper limit distributions.'
-        if TQDM:
-            SinghVals = np.sort([[CStruct[0](TrueParam, S), CStruct[1](TrueParam, S)] for S in tqdm(Samples)], 0)
-        else:
-            SinghVals = np.sort([[CStruct[0](TrueParam, S), CStruct[1](TrueParam, S)] for S in Samples], 0)
-    else:
-        if TQDM:
-            SinghVals = np.sort([CStruct(TrueParam, S) for S in tqdm(Samples)], 0)
-        else:
-            SinghVals = np.sort([CStruct(TrueParam, S) for S in Samples], 0)
-    
-    if len(np.shape(SinghVals)) > 1:
-        if np.shape(SinghVals)[1] != SSamples:
-            SinghVals = SinghVals.T
-    return SinghVals
+class singhplot():
+    def __init__(
+        self,
+        c_struct=None,
+        target_dist=None,
+        true_param=None,
+        n_samples=None):
+        if not any([c_struct is None, target_dist is None, true_param is None, n_samples is None]):
+            self.singhvals = singhvals
 
-def SinghFast(CStruct, TargetDist, TrueParam, SSamples = 1000, TQDM=False):
-    assert SSamples >= 2 and isinstance(SSamples, int), 'SSamples must be an integer greater than 2.'
-    Samples = TargetDist(SSamples)
-    if isinstance(CStruct(TrueParam, Samples[0]), np.ndarray):
-        assert len(CStruct(TrueParam, Samples[0])) == 2, 'Confidence Structure must have defined lower and upper limit distributions.'
-        if TQDM:
-            SinghVals = [a for a in [[CStruct[0](TrueParam, S), CStruct[1](TrueParam, S)] for S in tqdm(Samples)].sort()]
-        else:
-            SinghVals = [a for a in [[CStruct[0](TrueParam, S), CStruct[1](TrueParam, S)] for S in Samples].sort()]
+
+def singhvals(c_struct, target_dist, true_param, n_samples = 1000):
+    assert n_samples >= 2, 'n_samples must be greater than 2.'
+    n_samples = int(n_samples)
+    #samples = target_dist(n_samples)
+    if isinstance(c_struct(true_param, target_dist(1)[0]), (list, tuple, np.ndarray)):
+        singhvals = [list(s) for s in [*zip(*map(c_struct, [true_param]*n_samples, target_dist(n_samples)))]]
+        [s.sort() for s in singhvals]
     else:
-        if TQDM:
-            SinghVals = np.sort([CStruct(TrueParam, S) for S in tqdm(Samples)], 0)
-        else:
-            SinghVals = np.sort([CStruct(TrueParam, S) for S in Samples], 0)
-    
-    if len(np.shape(SinghVals)) > 1:
-        if np.shape(SinghVals)[1] != SSamples:
-            SinghVals = SinghVals.T
-    return SinghVals
+        singhvals = [*map(c_struct, [true_param]*n_samples, target_dist(n_samples))]
+        singhvals.sort()
+    return  singhvals
