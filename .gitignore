@@ -1,2 +1,5 @@
-.vscode/launch.json
+vscode/
 Testing/
+build/
+dist/
+singhtools.egg-info/

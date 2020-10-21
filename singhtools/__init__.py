@@ -1,5 +1,5 @@
-from . import singhtools
+from .singhtools import singhvals
 
 __all__ = [
-    'singhtools'
+    'singhvals'
 ]
