@@ -1,16 +1,5 @@
 import numpy as np
 
-class singhplot():
-    def __init__(
-        self,
-        c_struct=None,
-        target_dist=None,
-        true_param=None,
-        n_samples=None):
-        if not any([c_struct is None, target_dist is None, true_param is None, n_samples is None]):
-            self.singhvals = singhvals
-
-
 def singhvals(c_struct, target_dist, true_param, n_samples = 1000):
     assert n_samples >= 2, 'n_samples must be greater than 2.'
     n_samples = int(n_samples)
