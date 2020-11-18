@@ -1,5 +1,6 @@
-from .singhtools import singhvals
+from .singhtools import singhvals, struct_to_consonant
 
 __all__ = [
-    'singhvals'
+    'singhvals',
+    'struct_to_consonant'
 ]
